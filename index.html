@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throw Calculator with Vertical Position</title>
+</head>
+<body>
+    <h2>Throw Calculation</h2>
+    <label for="vert_position">Vertical Position at t = 0.5597252803 (inches):</label>
+    <input type="number" id="vert_position" placeholder="e.g., 60.5">
+    <br><br>
+    <label for="angle">Launch Angle (degrees):</label>
+    <input type="number" id="angle" value="45" placeholder="e.g., 45">
+    <br><br>
+    <button onclick="calculate()">Calculate</button>
+
+    <h3>Results:</h3>
+    <p id="result"></p>
+
+    <script>
+        function calculateThrowSpeed(vert_position, time, angle) {
+            const g = 386.09; // Gravitational acceleration in inches/s²
+            const angleRadians = angle * (Math.PI / 180); // Convert degrees to radians
+            const sinAngle = Math.sin(angleRadians); // Calculate sin(angle)
+
+            // Calculate required initial speed to reach the given vertical position at time t
+            const term1 = vert_position - (0.5 * g * time ** 2); // y - (1/2)gt^2
+            let V0 = term1 / (time * sinAngle); // V0 = (y - (1/2)gt^2) / (t * sin(angle))
+
+            return V0.toFixed(10); // Return with high precision
+        }
+
+        function calculate() {
+            let vert_position = parseFloat(document.getElementById('vert_position').value);
+            let time = 0.5597252803; // Given time in seconds
+            let angle = parseFloat(document.getElementById('angle').value); // Launch angle in degrees
+
+            if (isNaN(vert_position) || vert_position <= 0) {
+                document.getElementById('result').innerText = "Please enter a valid vertical position.";
+                return;
+            }
+
+            if (isNaN(angle) || angle <= 0 || angle >= 90) {
+                document.getElementById('result').innerText = "Please enter a valid launch angle (0 < angle < 90).";
+                return;
+            }
+
+            let required_speed = calculateThrowSpeed(vert_position, time, angle);
+
+            document.getElementById('result').innerText = `Required Initial Speed: ${required_speed} inches/second to reach ` +
+                `a vertical position of ${vert_position} inches at t = ${time} seconds with a launch angle of ${angle} degrees.`;
+        }
+    </script>
+</body>
+</html>
